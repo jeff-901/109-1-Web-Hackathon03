@@ -26,9 +26,17 @@ const dboptions = {
   poolSize: 10
 }
 // TODO : connect mongodb here
+mongoose.connect(process.env.MONGO_URL, dboptions)
+const db = mongoose.connection
 
-routes(app)
+db.on('error', (error) => {
+  console.error(error)
+})
+db.once('open', () => {
+  console.log('MongoDB connected!')
+  routes(app)
 
-app.listen(port, () => {
-  console.log(`Server is up on port ${port}.`)
+  app.listen(port, () => {
+    console.log(`Server is up on port ${port}.`)
+  })
 })
